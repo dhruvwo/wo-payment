@@ -5,14 +5,11 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-import {
-    Colors,
-} from 'react-native/Libraries/NewAppScreen';
 import acceptService from './AcceptService';
 import PaymentModal from './component/PaymentModal';
 
 const AcceptPaymentButton = (props) => {
-    const [openIframe, setOpenIframe] = useState(props.openIframe);
+    const [openIframe, setOpenIframe] = useState(false);
     const [iframeUrl, setIframeUrl] = useState('');
 
     const styles = StyleSheet.create({
