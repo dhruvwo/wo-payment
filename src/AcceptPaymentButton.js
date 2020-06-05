@@ -24,21 +24,33 @@ const AcceptPaymentButton = (props) => {
             color: '#fff',
             textAlign: 'center',
             paddingHorizontal: 20,
-            paddingVertical: 16,
+            paddingVertical: 12,
         }
     });
+
     async function payClicked() {
-        setOpenIframe(true);
-        const url = await acceptService.getIframeUrl(props.paymentOptions);
-        setIframeUrl(url);
+        try {
+            setOpenIframe(true);
+            const url = await acceptService.getIframeUrl(props.paymentOptions);
+            setIframeUrl(url);
+        } catch (e) {
+            onError(e);
+        }
+    }
+
+    function onError(e) {
+        setOpenIframe(false);
+        props.onError(e);
     }
 
     return (
         <>
-            <TouchableOpacity style={styles.button} onPress={() => {
-                payClicked()
-            }}>
-                <Text style={styles.buttonText}>Pay Button</Text>
+            <TouchableOpacity style={[styles.button, props.buttonContainerStyle || {}]}
+                disabled={!!props.disabled}
+                onPress={() => {
+                    payClicked()
+                }}>
+                <Text style={[styles.buttonText, props.buttonTextStyle || {}]}>{props.buttonText || 'Pay Button'}</Text>
             </TouchableOpacity>
             <PaymentModal
                 isVisible={openIframe}
@@ -49,15 +61,12 @@ const AcceptPaymentButton = (props) => {
                     console.log('onRequestClose in button res', res);
                     props.paymentResponse(res);
                 }}
+                onError={(e) => {
+                    onError(e);
+                }}
             />
         </>
     );
 };
-
-const styles = StyleSheet.create({
-    scrollView: {
-        backgroundColor: Colors.lighter,
-    },
-});
 
 export default AcceptPaymentButton;

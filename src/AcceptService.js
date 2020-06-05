@@ -6,6 +6,7 @@ const baseUrl = 'https://accept.paymobsolutions.com/api';
 
 let token = '';
 let paymentToken = '';
+let orderId = '';
 
 let config = {
     apiKey: '',
@@ -17,10 +18,12 @@ let config = {
 let options;
 
 class AcceptService {
+    // setting config in app init
     setConfig(configOptions) {
         config = configOptions;
     }
 
+    // authenticate user & get token using api key to precess other requests
     async getToken() {
         try {
             const response = await axios({
@@ -28,7 +31,7 @@ class AcceptService {
                 url: `${baseUrl}/auth/tokens`,
                 headers: { 'content-type': 'application/json' },
                 data: {
-                    api_key: config.apiKey
+                    api_key: config.apiKey + '123'
                 },
             });
             token = response.data.token;
@@ -39,6 +42,7 @@ class AcceptService {
         }
     }
 
+    // get order if exist & create one if not exist
     async getOrder() {
         try {
             const orders = await axios({
@@ -51,7 +55,8 @@ class AcceptService {
                 }
             });
             if (orders.data.results.length) {
-                return { orderId: orders.data.results[0].id };
+                orderId = orders.data.results[0].id;
+                return true;
             }
             const response = await axios({
                 method: 'post',
@@ -61,22 +66,24 @@ class AcceptService {
                     token,
                 },
                 data: {
-                    'delivery_needed': 'false',
                     'merchant_id': options.marchantId,
                     'merchant_order_id': options.uniqueId,
                     'amount_cents': options.price * 100,
                     'currency': options.currency,
-                    'items': [],
                 },
             });
-            return { orderId: response.data.id };
+            orderId = response.data.id;
+            return true;
         } catch (e) {
             console.warn('error in getting order', e)
             throw e;
         }
     }
 
-    async generatePaymentToken(orderId) {
+    // generatePaymentToken is used obtain a payment_key token.
+    // This key will be used to authenticate payment request. 
+    // It will be also used for verifying your transaction request meta data.
+    async generatePaymentToken() {
         try {
             const response = await axios({
                 method: 'post',
@@ -121,7 +128,7 @@ class AcceptService {
             throw e;
         }
     }
-
+    // createURL will generate iframe url to open it in webview to make payment.
     async createURL(paymentToken) {
         return `${baseUrl}/acceptance/iframes/${config.iFrameId}?payment_token=${paymentToken}`;
     }
@@ -151,19 +158,26 @@ class AcceptService {
     //     }
     // }
 
-    // set options to generate iFrame url.
+    // set options for order request
     setOptions(props) {
+        if (!props || !props.uniqueId || !props.price || !props.firstName
+            || !props.lastName || !props.email || !props.mobile) {
+            throw {
+                status: 400,
+                message: 'bad request'
+            };
+        }
         options = {
-            type: props.type || 'card',
             uniqueId: props.uniqueId,
-            currency: props.currency,
             price: Number((props.price).toFixed(0)),
-            code: props.code,
             mobile: props.mobile,
             email: props.email,
-            country: props.country,
             firstName: props.firstName,
             lastName: props.lastName,
+            code: props.code || '+20',
+            currency: props.currency || 'EGP',
+            type: props.type || 'card',
+            country: props.country || 'EG',
         };
         if (props.address) {
             options.address = props.address
@@ -172,23 +186,16 @@ class AcceptService {
         }
     }
 
+    // generate & return iFrame url
     async getIframeUrl(props) {
         try {
             this.setOptions(props);
-            if (!options || !options.uniqueId || !options.price) {
-                return {
-                    status: 400,
-                    message: 'bad request'
-                };
-            }
             await this.getToken();
-            const { orderId } = await this.getOrder();
-            if (isNaN(orderId)) return { message: 'orderId from accept is not a number' };
-            await this.generatePaymentToken(orderId);
+            await this.getOrder();
+            await this.generatePaymentToken();
 
             if (paymentToken) {
-                const url = await this.createURL(paymentToken);
-                return url;
+                return await this.createURL(paymentToken);
                 // if (options.type === 'cash') {
                 //     return await this.createReference(paymentToken);
                 // } else {
