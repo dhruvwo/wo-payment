@@ -1,5 +1,5 @@
-import acceptService from './src/rn-accept/AcceptService';
-import { AcceptPaymentButton } from './src/rn-accept/AcceptPaymentButton';
-import { PaymentModal } from './src/rn-accept/component/PaymentModal';
+import acceptService from './src/AcceptService';
+import AcceptPaymentButton from './src/AcceptPaymentButton';
+import PaymentModal from './src/component/PaymentModal';
 
 export { AcceptPaymentButton, PaymentModal, acceptService };

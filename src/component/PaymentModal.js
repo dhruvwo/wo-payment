@@ -8,9 +8,10 @@ import {
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { WebView } from "react-native-webview";
-import acceptService from '../AcceptService';
+
 let responseUrl = '';
 let timer = '';
+
 export default function PaymentModal(props) {
     const [isLoading, setIsLoading] = useState(true);
     const [canClose, setCanClose] = useState(false);
