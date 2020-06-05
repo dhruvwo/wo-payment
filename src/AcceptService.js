@@ -31,7 +31,7 @@ class AcceptService {
                 url: `${baseUrl}/auth/tokens`,
                 headers: { 'content-type': 'application/json' },
                 data: {
-                    api_key: config.apiKey + '123'
+                    api_key: config.apiKey
                 },
             });
             token = response.data.token;
