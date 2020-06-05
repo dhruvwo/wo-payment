@@ -31,6 +31,7 @@
     "eslint": "^7.1.0",
     "eslint-plugin-react": "^7.20.0",
     "metro-react-native-babel-preset": "^0.59.0",
-    "react-native-webview": "^8.2.1"
+    "react-native-webview": "^8.2.1",
+    "axios": "^0.19.2"
   }
 }
