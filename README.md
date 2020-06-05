@@ -1,5 +1,3 @@
-# rn-accept
-making plugin
 # react-native-accept
 
 A package to implement [AcceptPayment](https://accept.paymobsolutions.com/docs/) in React Native applications 
