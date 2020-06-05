@@ -1,6 +1,6 @@
 {
   "name": "react-native-accept",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Accept payment plugin",
   "main": "index.js",
   "scripts": {
