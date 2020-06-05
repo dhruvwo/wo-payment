@@ -9,7 +9,6 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-webview": "^8.2.1"
   },
   "repository": {
     "type": "git",
@@ -31,6 +30,7 @@
     "babel-preset-env": "^1.7.0",
     "eslint": "^7.1.0",
     "eslint-plugin-react": "^7.20.0",
-    "metro-react-native-babel-preset": "^0.59.0"
+    "metro-react-native-babel-preset": "^0.59.0",
+    "react-native-webview": "^8.2.1"
   }
 }
