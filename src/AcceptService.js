@@ -2,7 +2,7 @@ import React from 'react';
 import axios from 'axios';
 
 let apiKey = '';
-let iFrameId: any = '';
+let iFrameId = '';
 
 const baseUrl = 'https://accept.paymobsolutions.com/api';
 const status = 'test';
@@ -11,34 +11,34 @@ const integration = {
     live: { card: "17525", kiosk: "17523" }
 };
 
-export interface acceptConfig {
-    apiKey: string,
-    iFrameId: number
-}
+// export interface acceptConfig {
+//     apiKey,
+//     iFrameId
+// }
 
-export interface Options {
-    type: string;
-    currency: string;
-    price: number;
-    code: string;
-    mobile: string;
-    email: string;
-    country: string;
-    firstName: string;
-    lastName: string;
-    uniqueId: string;
-    marchantId?: string;
-};
-let options: Options;
+// export interface Options {
+//     type;
+//     currency;
+//     price;
+//     code;
+//     mobile;
+//     email;
+//     country;
+//     firstName;
+//     lastName;
+//     uniqueId;
+//     marchantId?;
+// };
+let options;
 
 class AcceptService {
-    public setConfig(config: acceptConfig) {
+    setConfig(config) {
         apiKey = config.apiKey;
         iFrameId = config.iFrameId;
     }
 
-    private async getToken(): Promise<any> {
-        const response: any = await axios({
+    async getToken() {
+        const response = await axios({
             method: 'post',
             url: `${baseUrl}/auth/tokens`,
             headers: { "content-type": "application/json" },
@@ -50,9 +50,9 @@ class AcceptService {
         return response.data.token;
     }
 
-    private async getOrder(token: any): Promise<any> {
+    async getOrder(token) {
         try {
-            const orders: any = await axios({
+            const orders = await axios({
                 method: 'get',
                 url: `${baseUrl}/ecommerce/orders?token=${token}&merchant_order_id=${options.uniqueId}`,
                 headers: { "content-type": "application/json" },
@@ -61,7 +61,7 @@ class AcceptService {
             if (orders.data.results.length) {
                 return { orderId: orders.data.results[0].id };
             }
-            const response: any = await axios({
+            const response = await axios({
                 method: 'post',
                 url: `${baseUrl}/ecommerce/orders?token=${token}`,
                 headers: { "content-type": "application/json" },
@@ -81,10 +81,10 @@ class AcceptService {
         }
     }
 
-    private async generatePaymentToken(token: string, orderId: number): Promise<any> {
+    async generatePaymentToken(token, orderId) {
         try {
             console.log('generatePaymentToken... caled ', token, orderId);
-            const response: any = await axios({
+            const response = await axios({
                 method: 'post',
                 url: `${baseUrl}/acceptance/payment_keys?token=${token}`,
                 headers: { "content-type": "application/json" },
@@ -121,14 +121,14 @@ class AcceptService {
         }
     }
 
-    private async createURL(paymentToken: string): Promise<any> {
+    async createURL(paymentToken) {
         return `${baseUrl}/acceptance/iframes/${iFrameId}?payment_token=${paymentToken}`  //27874
     }
 
-    private async createReference(paymentToken: string): Promise<any> {
+    async createReference(paymentToken) {
         console.log('createReference req', paymentToken);
         try {
-            const response: any = await axios({
+            const response = await axios({
                 method: 'post',
                 url: `${baseUrl}/acceptance/payments/payment_token=${paymentToken}`,
                 headers: { "content-type": "application/json" },
@@ -147,7 +147,7 @@ class AcceptService {
         }
     }
     // set options to generate iFrame url.
-    public setOptions(props: Options): void {
+    setOptions(props) {
         console.log('setOptions called');
         options = {
             type: (props.type ? 'cash' : 'card'),
@@ -164,7 +164,7 @@ class AcceptService {
         console.log('options', options);
     }
 
-    public async getIframeUrl(props: Options): Promise<any> {
+    async getIframeUrl(props) {
         this.setOptions(props);
         console.log('optionsoptionsoptionsoptions', options);
         if (!options || !options.uniqueId || !options.price) {
