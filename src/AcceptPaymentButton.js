@@ -40,17 +40,21 @@ const AcceptPaymentButton = (props) => {
 
     function onError(e) {
         setOpenIframe(false);
+        setIframeUrl('');
         props.onError(e);
     }
 
     return (
         <>
-            <TouchableOpacity style={[styles.button, props.buttonContainerStyle || {}]}
+            <TouchableOpacity
+                style={[styles.button, props.buttonContainerStyle || {}]}
                 disabled={!!props.disabled}
                 onPress={() => {
                     payClicked()
                 }}>
-                <Text style={[styles.buttonText, props.buttonTextStyle || {}]}>{props.buttonText || 'Pay Button'}</Text>
+                <Text style={[styles.buttonText, props.buttonTextStyle || {}]}>
+                    {props.buttonText || 'Pay Button'}
+                </Text>
             </TouchableOpacity>
             <PaymentModal
                 isVisible={openIframe}
@@ -58,7 +62,6 @@ const AcceptPaymentButton = (props) => {
                 onRequestClose={(res) => {
                     setOpenIframe(false);
                     setIframeUrl('');
-                    console.log('onRequestClose in button res', res);
                     props.paymentResponse(res);
                 }}
                 onError={(e) => {

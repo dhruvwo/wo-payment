@@ -18,7 +18,6 @@ export default function PaymentModal(props) {
     const [status, setStatus] = useState(false);
 
     useEffect(() => {
-        console.log('props.iframeUrl', props.iframeUrl);
         if (!props.iframeUrl) {
             setIsLoading(true)
         }
@@ -112,7 +111,6 @@ export default function PaymentModal(props) {
     }
 
     function handleOnNavigationStateChange(res) {
-        console.log('resres', res);
         setCanClose(res.canGoBack);
         let status = 'pending';
         if (res.url) {

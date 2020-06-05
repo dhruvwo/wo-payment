@@ -107,14 +107,14 @@ class AcceptService {
                         'phone_number': options.code + options.mobile,
                         'email': options.email,
                         'country': options.country,
+                        'city': options.address.city || 'NA',
+                        'state': options.address.state || 'NA',
                         'apartment': options.address.apartment || 'NA',
                         'floor': options.address.floor || 'NA',
                         'street': options.address.street || 'NA',
                         'building': options.address.building || 'NA',
                         'shipping_method': options.address.shipping_method || 'NA',
                         'postal_code': options.address.postal_code || 'NA',
-                        'city': options.address.city || 'NA',
-                        'state': options.address.state || 'NA'
                     }
                 },
             });
@@ -123,13 +123,14 @@ class AcceptService {
                 throw response.error;
             }
             paymentToken = response.data.token;
+            return true;
         } catch (e) {
             console.warn('error in generating payment keys error', e)
             throw e;
         }
     }
     // createURL will generate iframe url to open it in webview to make payment.
-    async createURL(paymentToken) {
+    async createURL() {
         return `${baseUrl}/acceptance/iframes/${config.iFrameId}?payment_token=${paymentToken}`;
     }
 
@@ -178,12 +179,8 @@ class AcceptService {
             currency: props.currency || 'EGP',
             type: props.type || 'card',
             country: props.country || 'EG',
+            address: props.address || {},
         };
-        if (props.address) {
-            options.address = props.address
-        } else {
-            options.address = {};
-        }
     }
 
     // generate & return iFrame url
@@ -193,16 +190,13 @@ class AcceptService {
             await this.getToken();
             await this.getOrder();
             await this.generatePaymentToken();
-
-            if (paymentToken) {
-                return await this.createURL(paymentToken);
-                // if (options.type === 'cash') {
-                //     return await this.createReference(paymentToken);
-                // } else {
-                //     const url = await this.createURL(paymentToken);
-                //     return url;
-                // }
-            }
+            return await this.createURL();
+            // if (options.type === 'cash') {
+            //     return await this.createReference(paymentToken);
+            // } else {
+            //     const url = await this.createURL(paymentToken);
+            //     return url;
+            // }
         } catch (e) {
             throw e;
         }
