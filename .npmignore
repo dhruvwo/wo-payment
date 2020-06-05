@@ -1,5 +1,9 @@
-.nyc_output/
-coverage/
-node_modules/
-.idea/
-.vscode/
+# Logs
+*.log
+npm-debug.log
+
+# Dependency directory
+node_modules
+
+# Runtime data
+tmp

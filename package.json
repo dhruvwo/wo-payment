@@ -1,7 +1,7 @@
 {
-  "name": "rn-accept",
-  "version": "1.0.0",
-  "description": "making plugin",
+  "name": "react-native-accept",
+  "version": "1.0.1",
+  "description": "Accept payment plugin",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,11 +10,22 @@
     "type": "git",
     "url": "git+https://github.com/dhruvwo/rn-accept.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "react-native"
+  ],
+  "author": "Webosmotic",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/dhruvwo/rn-accept/issues"
   },
-  "homepage": "https://github.com/dhruvwo/rn-accept#readme"
+  "homepage": "https://github.com/dhruvwo/rn-accept#readme",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^3.1.0",
+    "@typescript-eslint/parser": "^3.1.0",
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^7.1.0",
+    "eslint-plugin-react": "^7.20.0",
+    "metro-react-native-babel-preset": "^0.59.0"
+  }
 }
