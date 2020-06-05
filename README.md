@@ -57,11 +57,11 @@ acceptService.setConfig({
     firstName: 'FIRST_NAME',
     lastName: 'LAST_NAME',
     email: 'EMAIL',
-    country: 'COUNTRY(EX: 'IN' for india)',
+    country: 'COUNTRY(EX: 'EG' for egypt)',
     code: 'CONTRY_CODE',
     mobile: 'MOBILE_NUMBER',
     price: 'AMOUNT',
-    currency: 'CURRENCY_CODE(EX: 'INR' for indian rupee)',
+    currency: 'CURRENCY_CODE(EX: 'EGP' for egyptian pound)',
     marchantId: 'MARCHANT_ID'
   }}
   paymentResponse={(res) => {
