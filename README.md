@@ -1,4 +1,4 @@
-# wo-accept
+# wo-payment
 <!-- 
 A package library to implement [AcceptPayment](https://accept.paymobsolutions.com/docs/) in React Native applications  -->
 
@@ -14,7 +14,7 @@ You will need the following dependency installed in your React Native project be
 ## Installation
 
 ```bash 
-npm install wo-accept --save
+npm install wo-paymen --save
 ```
 
 ## Usage
@@ -24,7 +24,7 @@ Follow the steps given below :
 - Import to your js file
 
 ```python
-import { acceptService, PaymentModal, AcceptPaymentButton } from 'wo-accept';
+import { acceptService, PaymentModal, AcceptPaymentButton } from 'wo-payment';
 ```
 - Set the following configuration of your accept payment on top of your `App.js`
 
