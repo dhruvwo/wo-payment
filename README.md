@@ -151,6 +151,21 @@ const paymentOptions = {
     </Text>
 </TouchableOpacity>
 ```
+ - 'payClick' function:-
+```
+async function payClicked(type = 'card') {
+    paymentOptions.uniqueId = 'UNIQUE_ID'; #Unique Id for you order
+    paymentOptions.type = type;
+    let reference = '';
+    reference = await acceptService.getReference(paymentOptions);
+    console.log('payClicked reference ---->>>', reference);
+    if (reference && ['card', 'wallet'].includes(type)) {
+        setIsVisibale(true);
+        setIframeUrl(reference);
+    }
+}
+
+```
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
