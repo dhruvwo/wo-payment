@@ -1,9 +1,5 @@
 import React, { useState } from 'react';
-import {
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import { acceptService, PaymentModal } from 'react-native-accept';
 
@@ -14,14 +10,14 @@ export default function AcceptPaymentButton(props) {
     const styles = StyleSheet.create({
         button: {
             backgroundColor: '#010101',
-            borderRadius: 25
+            borderRadius: 25,
         },
         buttonText: {
             color: '#fff',
             textAlign: 'center',
             paddingHorizontal: 20,
             paddingVertical: 12,
-        }
+        },
     });
 
     async function payClicked() {
@@ -49,12 +45,17 @@ export default function AcceptPaymentButton(props) {
                     if (props.onPress) {
                         props.onPress();
                     } else {
-                        payClicked()
+                        payClicked();
                     }
-                }}>
-                {props.innerComponent ? props.innerComponent : <Text style={[styles.buttonText, props.buttonTextStyle || {}]}>
-                    {props.buttonText || 'Pay Button (card)'}
-                </Text>}
+                }}
+            >
+                {props.innerComponent ? (
+                    props.innerComponent
+                ) : (
+                        <Text style={[styles.buttonText, props.buttonTextStyle || {}]}>
+                            {props.buttonText || 'Pay Button (card)'}
+                        </Text>
+                    )}
             </TouchableOpacity>
             <PaymentModal
                 isVisible={openIframe}
@@ -70,4 +71,4 @@ export default function AcceptPaymentButton(props) {
             />
         </>
     );
-};
+}

@@ -1,4 +1,3 @@
-import React from 'react';
 import axios from 'axios';
 
 // the base url of accept payment
@@ -13,22 +12,22 @@ let config = {
     apiKey: '',
     iFrameId: '',
     status: '',
-    integration: {}
-}
+    integration: {},
+};
 
 const sourceData = {
     cash: {
-        'identifier': 'cash',
-        'subtype': 'CASH'
+        identifier: 'cash',
+        subtype: 'CASH',
     },
     wallet: {
-        'identifier': '01274155230', //options.phoneNumber
-        'subtype': 'WALLET'
+        identifier: '01274155230', //options.phoneNumber
+        subtype: 'WALLET',
     },
     kiosk: {
-        'identifier': 'AGGREGATOR',
-        'subtype': 'AGGREGATOR'
-    }
+        identifier: 'AGGREGATOR',
+        subtype: 'AGGREGATOR',
+    },
 };
 
 let options;
@@ -41,16 +40,23 @@ class AcceptService {
 
     // set options for order request
     setOptions(props) {
-        if (!props || !props.uniqueId || !props.price || !props.firstName
-            || !props.lastName || !props.email || !props.phoneNumber) {
+        if (
+            !props ||
+            !props.uniqueId ||
+            !props.price ||
+            !props.firstName ||
+            !props.lastName ||
+            !props.email ||
+            !props.phoneNumber
+        ) {
             throw {
                 status: 400,
-                message: 'bad request'
+                message: 'bad request',
             };
         }
         options = {
             uniqueId: props.uniqueId,
-            price: Number((props.price).toFixed(0)),
+            price: Number(props.price.toFixed(0)),
             phoneNumber: props.phoneNumber,
             email: props.email,
             firstName: props.firstName,
@@ -70,7 +76,7 @@ class AcceptService {
                 url: `${baseUrl}/auth/tokens`,
                 headers: { 'content-type': 'application/json' },
                 data: {
-                    api_key: config.apiKey
+                    api_key: config.apiKey,
                 },
             });
             marchantId = response.data.profile.id;
@@ -91,13 +97,13 @@ class AcceptService {
                 headers: { 'content-type': 'application/json' },
                 params: {
                     token,
-                    merchant_order_id: options.uniqueId
-                }
+                    merchant_order_id: options.uniqueId,
+                },
             });
             if (orders.data.results.length) {
                 throw {
                     order: orders.data.results[0],
-                    message: `order already exist for given unique id: ${options.uniqueId}`
+                    message: `order already exist for given unique id: ${options.uniqueId}`,
                 };
             }
             const response = await axios({
@@ -108,22 +114,22 @@ class AcceptService {
                     token,
                 },
                 data: {
-                    'merchant_id': marchantId,
-                    'merchant_order_id': options.uniqueId,
-                    'amount_cents': options.price * 100,
-                    'currency': options.currency,
+                    merchant_id: marchantId,
+                    merchant_order_id: options.uniqueId,
+                    amount_cents: options.price * 100,
+                    currency: options.currency,
                 },
             });
             orderId = response.data.id;
             return true;
         } catch (e) {
-            console.warn('error in getting order', e)
+            console.warn('error in getting order', e);
             throw e;
         }
     }
 
     // generatePaymentToken is used obtain a payment_key token.
-    // This key will be used to authenticate payment request. 
+    // This key will be used to authenticate payment request.
     // It will be also used for verifying your transaction request meta data.
     async generatePaymentToken() {
         try {
@@ -135,29 +141,29 @@ class AcceptService {
                     token,
                 },
                 data: {
-                    'auth_token': token,
-                    'amount_cents': options.price * 100,
-                    'currency': options.currency,
-                    'integration_id': config.integration[config.status][options.type],
-                    'kiosk_integration_id': config.integration[config.status][options.type],
-                    'card_integration_id': config.integration[config.status][options.type],
-                    'wallet_integration_id': config.integration[config.status][options.type],
-                    'order_id': orderId,
-                    'billing_data': {
-                        'first_name': options.firstName,
-                        'last_name': options.lastName,
-                        'phone_number': options.phoneNumber,
-                        'email': options.email,
-                        'country': options.country,
-                        'city': options.address.city || 'NA',
-                        'state': options.address.state || 'NA',
-                        'apartment': options.address.apartment || 'NA',
-                        'floor': options.address.floor || 'NA',
-                        'street': options.address.street || 'NA',
-                        'building': options.address.building || 'NA',
-                        'shipping_method': options.address.shipping_method || 'NA',
-                        'postal_code': options.address.postal_code || 'NA',
-                    }
+                    auth_token: token,
+                    amount_cents: options.price * 100,
+                    currency: options.currency,
+                    integration_id: config.integration[config.status][options.type],
+                    kiosk_integration_id: config.integration[config.status][options.type],
+                    card_integration_id: config.integration[config.status][options.type],
+                    wallet_integration_id: config.integration[config.status][options.type],
+                    order_id: orderId,
+                    billing_data: {
+                        first_name: options.firstName,
+                        last_name: options.lastName,
+                        phone_number: options.phoneNumber,
+                        email: options.email,
+                        country: options.country,
+                        city: options.address.city || 'NA',
+                        state: options.address.state || 'NA',
+                        apartment: options.address.apartment || 'NA',
+                        floor: options.address.floor || 'NA',
+                        street: options.address.street || 'NA',
+                        building: options.address.building || 'NA',
+                        shipping_method: options.address.shipping_method || 'NA',
+                        postal_code: options.address.postal_code || 'NA',
+                    },
                 },
             });
             if (response.error) {
@@ -167,7 +173,7 @@ class AcceptService {
             paymentToken = response.data.token;
             return true;
         } catch (e) {
-            console.warn('error in generating payment keys error', e)
+            console.warn('error in generating payment keys error', e);
             throw e;
         }
     }
@@ -189,8 +195,8 @@ class AcceptService {
                 },
                 data: {
                     source: sourceData[options.type],
-                    payment_token: paymentToken
-                }
+                    payment_token: paymentToken,
+                },
             });
             if (options.type === 'wallet') {
                 return response.data ? response.data.redirect_url : '';
@@ -199,7 +205,7 @@ class AcceptService {
             }
             return response.data ? response.data.id : null;
         } catch (e) {
-            console.warn('createReference error', e)
+            console.warn('createReference error', e);
             throw e;
         }
     }
@@ -209,11 +215,11 @@ class AcceptService {
         try {
             this.setOptions(props);
             await this.getToken();
-            console.log('getToken done...')
+            console.log('getToken done...');
             await this.getOrder();
-            console.log('getOrder done...')
+            console.log('getOrder done...');
             await this.generatePaymentToken();
-            console.log('generatePaymentToken done...')
+            console.log('generatePaymentToken done...');
             if (options.type === 'card') {
                 return await this.createURL();
             }
@@ -221,8 +227,7 @@ class AcceptService {
         } catch (e) {
             throw e;
         }
-    };
-
+    }
 }
 
 const acceptService = new AcceptService();

@@ -7,3 +7,7 @@ node_modules
 
 # Runtime data
 tmp
+
+tsconfig.json
+tslint.json
+.prettierrc

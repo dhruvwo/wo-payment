@@ -1,13 +1,17 @@
 import {
-    Modal, StyleSheet, Text, View,
-    TouchableOpacity, ScrollView,
+    Modal,
+    StyleSheet,
+    Text,
+    View,
+    TouchableOpacity,
+    ScrollView,
     SafeAreaView,
     Alert,
     ActivityIndicator,
-    Dimensions
+    Dimensions,
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { WebView } from "react-native-webview";
+import { WebView } from 'react-native-webview';
 
 let responseUrl = '';
 let timer = '';
@@ -19,7 +23,7 @@ export default function PaymentModal(props) {
 
     useEffect(() => {
         if (!props.iframeUrl) {
-            setIsLoading(true)
+            setIsLoading(true);
         }
     }, [props.iframeUrl]);
 
@@ -29,8 +33,7 @@ export default function PaymentModal(props) {
                 closeAlert(timer);
             }, 10000);
         }
-        return () => {
-        };
+        return () => { };
     }, [status]);
 
     const styles = StyleSheet.create({
@@ -38,7 +41,7 @@ export default function PaymentModal(props) {
             flex: 1,
             height: Dimensions.get('window').height,
             width: Dimensions.get('window').width,
-            overflow: 'scroll'
+            overflow: 'scroll',
         },
         closeButton: {
             right: 8,
@@ -46,19 +49,19 @@ export default function PaymentModal(props) {
             width: 45,
             height: 45,
             position: 'absolute',
-            alignItems: "center",
-            justifyContent: "center",
+            alignItems: 'center',
+            justifyContent: 'center',
             borderRadius: 22.5,
             zIndex: 20,
-            backgroundColor: "#00000077"
+            backgroundColor: '#00000077',
         },
         closeText: {
             lineHeight: 25,
             fontSize: 25,
             paddingTop: 2,
-            textAlign: "center",
-            color: "#FFF",
-            includeFontPadding: false
+            textAlign: 'center',
+            color: '#FFF',
+            includeFontPadding: false,
         },
         container: {
             paddingTop: 60,
@@ -72,16 +75,16 @@ export default function PaymentModal(props) {
             top: 0,
             left: 0,
             bottom: 0,
-            right: 0
-        }
+            right: 0,
+        },
     });
 
     function getAsUriParameters() {
         let regex = /[?&]([^=#]+)=([^&#]*)/g,
             params = {},
-            match
+            match;
         while ((match = regex.exec(responseUrl))) {
-            params[match[1]] = match[2]
+            params[match[1]] = match[2];
         }
         return params;
     }
@@ -92,21 +95,18 @@ export default function PaymentModal(props) {
             const params = getAsUriParameters();
             props.onClose({ status, params });
         } else {
-            Alert.alert(
-                `Cancel Transaction`,
-                `Are you sure you want to cancel the transaction?`,
-                [
-                    {
-                        text: 'Ok',
-                        onPress: () => {
-                            props.onClose({ status });
-                        }
-                    }, {
-                        text: 'Close',
-                        style: 'cancel',
+            Alert.alert(`Cancel Transaction`, `Are you sure you want to cancel the transaction?`, [
+                {
+                    text: 'Ok',
+                    onPress: () => {
+                        props.onClose({ status });
                     },
-                ],
-            );
+                },
+                {
+                    text: 'Close',
+                    style: 'cancel',
+                },
+            ]);
         }
     }
 
@@ -125,32 +125,45 @@ export default function PaymentModal(props) {
     }
 
     return (
-        <Modal visible={props.isVisible} onClose={() => {
-            closeAlert()
-        }}>
+        <Modal
+            visible={props.isVisible}
+            onClose={() => {
+                closeAlert();
+            }}
+        >
             <SafeAreaView>
                 <View style={{ position: 'relative' }}>
-                    <TouchableOpacity
-                        style={styles.closeButton}
-                        onPress={() => closeAlert()}>
+                    <TouchableOpacity style={styles.closeButton} onPress={() => closeAlert()}>
                         <Text style={styles.closeText}>x</Text>
                     </TouchableOpacity>
-                    <ScrollView keyboardShouldPersistTaps={"handled"} scrollEnabled={false} contentContainerStyle={{ flexGrow: 1 }}>
+                    <ScrollView
+                        keyboardShouldPersistTaps={'handled'}
+                        scrollEnabled={false}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                    >
                         <View style={styles.container}>
-                            {props.iframeUrl ? <WebView
-                                overScrollMode={'always'}
-                                style={styles.iframeStyle}
-                                automaticallyAdjustContentInsets={false}
-                                javaScriptEnabled={true}
-                                domStorageEnabled={true}
-                                // bounces={false}
-                                source={{ uri: props.iframeUrl }}
-                                onLoadStart={() => { setIsLoading(true) }}
-                                onLoadEnd={() => { setIsLoading(false) }}
-                                onNavigationStateChange={(res) => {
-                                    handleOnNavigationStateChange(res)
-                                }}
-                            /> : <View />}
+                            {props.iframeUrl ? (
+                                <WebView
+                                    overScrollMode={'always'}
+                                    style={styles.iframeStyle}
+                                    automaticallyAdjustContentInsets={false}
+                                    javaScriptEnabled={true}
+                                    domStorageEnabled={true}
+                                    // bounces={false}
+                                    source={{ uri: props.iframeUrl }}
+                                    onLoadStart={() => {
+                                        setIsLoading(true);
+                                    }}
+                                    onLoadEnd={() => {
+                                        setIsLoading(false);
+                                    }}
+                                    onNavigationStateChange={(res) => {
+                                        handleOnNavigationStateChange(res);
+                                    }}
+                                />
+                            ) : (
+                                    <View />
+                                )}
                             {isLoading && <ActivityIndicator style={styles.loaderStyle} size={35} />}
                         </View>
                     </ScrollView>

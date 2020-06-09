@@ -1,10 +1,11 @@
 {
   "name": "react-native-accept",
-  "version": "1.0.8",
+  "version": "1.0.11",
   "description": "Accept payment plugin",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\""
   },
   "peerDependencies": {
     "react": "*",
@@ -15,7 +16,9 @@
     "url": "git+https://github.com/dhruvwo/rn-accept.git"
   },
   "keywords": [
-    "react-native"
+    "react-native",
+    "Accept Payments",
+    "react-native-accept"
   ],
   "author": "Webosmotic",
   "license": "MIT",
@@ -24,14 +27,21 @@
   },
   "homepage": "https://github.com/dhruvwo/rn-accept#readme",
   "devDependencies": {
+    "@types/jest": "^25.2.3",
     "@typescript-eslint/eslint-plugin": "^3.1.0",
     "@typescript-eslint/parser": "^3.1.0",
+    "axios": "^0.19.2",
     "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
     "eslint": "^7.1.0",
     "eslint-plugin-react": "^7.20.0",
+    "jest": "^26.0.1",
     "metro-react-native-babel-preset": "^0.59.0",
+    "prettier": "^2.0.5",
     "react-native-webview": "^8.2.1",
-    "axios": "^0.19.2"
+    "ts-jest": "^26.1.0",
+    "tslint": "^6.1.2",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.9.5"
   }
 }
