@@ -1,6 +1,6 @@
 # wo-accept
-
-A package library to implement [AcceptPayment](https://accept.paymobsolutions.com/docs/) in React Native applications 
+<!-- 
+A package library to implement [AcceptPayment](https://accept.paymobsolutions.com/docs/) in React Native applications  -->
 
 
 ## NOTE 
