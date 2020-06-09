@@ -1,7 +1,7 @@
 {
-  "name": "react-native-accept",
+  "name": "wo-payment",
   "version": "1.0.12",
-  "description": "Accept payment plugin",
+  "description": "WO payment plugin",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -17,8 +17,7 @@
   },
   "keywords": [
     "react-native",
-    "Accept Payments",
-    "react-native-accept"
+    "wo-payment"
   ],
   "author": "Webosmotic",
   "license": "MIT",

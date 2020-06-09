@@ -28,6 +28,11 @@ const sourceData = {
         identifier: 'AGGREGATOR',
         subtype: 'AGGREGATOR',
     },
+    valu: {
+        identifier: "01019050578",
+        down_payment: "1000",
+        subtype: "VALU"
+    },
 };
 
 let options;
@@ -183,7 +188,7 @@ class AcceptService {
         return `${baseUrl}/acceptance/iframes/${config.iFrameId}?payment_token=${paymentToken}`;
     }
 
-    // create reference for cash payment
+    // create reference for payment according to its type
     async createReference() {
         try {
             const response = await axios({
