@@ -21,12 +21,12 @@ npm install react-native-accept --save
 
 Follow the steps given below :
 
-* Import to your js file
+- Import to your js file
 
 ```python
 import { acceptService, PaymentModal, AcceptPaymentButton } from 'react-native-accept';
 ```
-* Set the following configuration of your accept payment on top of your `App.js`
+- Set the following configuration of your accept payment on top of your `App.js`
 
 
 ```python
@@ -51,7 +51,7 @@ acceptService.setConfig({
   }
 });
 ```
-* Make payment options
+- Make payment options
 ```
 const paymentOptions = {
 
@@ -72,7 +72,7 @@ const paymentOptions = {
 
 ```
 
-* Put a Button to start a payment
+- Put a Button to start a payment
 ```
 {/* default plugin button only for card payment */}
 <AcceptPaymentButton
