@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-import { acceptService, PaymentModal } from 'react-native-accept';
+import { acceptService, PaymentModal } from 'wo-accept';
 
 export default function AcceptPaymentButton(props) {
     const [openIframe, setOpenIframe] = useState(false);

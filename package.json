@@ -1,6 +1,6 @@
 {
   "name": "wo-payment",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "WO payment plugin",
   "main": "index.js",
   "scripts": {
