@@ -88,7 +88,10 @@ export default function PaymentModal(props) {
 
     function closeAlert(returnedTimer) {
         clearTimeout(returnedTimer || timer);
-        if (!canClose) {
+        if (canClose || (!canClose && !returnedTimer)) {
+            const params = getAsUriParameters();
+            props.onClose({ status, params });
+        } else {
             Alert.alert(
                 `Cancel Transaction`,
                 `Are you sure you want to cancel the transaction?`,
@@ -96,7 +99,7 @@ export default function PaymentModal(props) {
                     {
                         text: 'Ok',
                         onPress: () => {
-                            props.onRequestClose({ status });
+                            props.onClose({ status });
                         }
                     }, {
                         text: 'Close',
@@ -104,9 +107,6 @@ export default function PaymentModal(props) {
                     },
                 ],
             );
-        } else {
-            const params = getAsUriParameters();
-            props.onRequestClose({ status, params });
         }
     }
 
@@ -125,7 +125,7 @@ export default function PaymentModal(props) {
     }
 
     return (
-        <Modal visible={props.isVisible} onRequestClose={() => {
+        <Modal visible={props.isVisible} onClose={() => {
             closeAlert()
         }}>
             <SafeAreaView>

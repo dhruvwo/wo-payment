@@ -5,10 +5,9 @@ import {
     TouchableOpacity,
 } from 'react-native';
 
-import acceptService from './AcceptService';
-import PaymentModal from './component/PaymentModal';
+import { acceptService, PaymentModal } from 'react-native-accept';
 
-const AcceptPaymentButton = (props) => {
+export default function AcceptPaymentButton(props) {
     const [openIframe, setOpenIframe] = useState(false);
     const [iframeUrl, setIframeUrl] = useState('');
 
@@ -28,7 +27,7 @@ const AcceptPaymentButton = (props) => {
     async function payClicked() {
         try {
             setOpenIframe(true);
-            const url = await acceptService.getIframeUrl(props.paymentOptions);
+            const url = await acceptService.getReference(props.paymentOptions);
             setIframeUrl(url);
         } catch (e) {
             onError(e);
@@ -47,19 +46,23 @@ const AcceptPaymentButton = (props) => {
                 style={[styles.button, props.buttonContainerStyle || {}]}
                 disabled={!!props.disabled}
                 onPress={() => {
-                    payClicked()
+                    if (props.onPress) {
+                        props.onPress();
+                    } else {
+                        payClicked()
+                    }
                 }}>
-                <Text style={[styles.buttonText, props.buttonTextStyle || {}]}>
-                    {props.buttonText || 'Pay Button'}
-                </Text>
+                {props.innerComponent ? props.innerComponent : <Text style={[styles.buttonText, props.buttonTextStyle || {}]}>
+                    {props.buttonText || 'Pay Button (card)'}
+                </Text>}
             </TouchableOpacity>
             <PaymentModal
                 isVisible={openIframe}
                 iframeUrl={iframeUrl}
-                onRequestClose={(res) => {
+                onClose={(res) => {
                     setOpenIframe(false);
                     setIframeUrl('');
-                    props.paymentResponse(res);
+                    props.onClose(res);
                 }}
                 onError={(e) => {
                     onError(e);
@@ -68,5 +71,3 @@ const AcceptPaymentButton = (props) => {
         </>
     );
 };
-
-export default AcceptPaymentButton;

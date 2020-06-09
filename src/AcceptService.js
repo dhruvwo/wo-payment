@@ -5,6 +5,7 @@ import axios from 'axios';
 const baseUrl = 'https://accept.paymobsolutions.com/api';
 
 let token = '';
+let marchantId = '';
 let paymentToken = '';
 let orderId = '';
 
@@ -15,12 +16,50 @@ let config = {
     integration: {}
 }
 
+const sourceData = {
+    cash: {
+        'identifier': 'cash',
+        'subtype': 'CASH'
+    },
+    wallet: {
+        'identifier': '01274155230', //options.phoneNumber
+        'subtype': 'WALLET'
+    },
+    kiosk: {
+        'identifier': 'AGGREGATOR',
+        'subtype': 'AGGREGATOR'
+    }
+};
+
 let options;
 
 class AcceptService {
     // setting config in app init
     setConfig(configOptions) {
         config = configOptions;
+    }
+
+    // set options for order request
+    setOptions(props) {
+        if (!props || !props.uniqueId || !props.price || !props.firstName
+            || !props.lastName || !props.email || !props.phoneNumber) {
+            throw {
+                status: 400,
+                message: 'bad request'
+            };
+        }
+        options = {
+            uniqueId: props.uniqueId,
+            price: Number((props.price).toFixed(0)),
+            phoneNumber: props.phoneNumber,
+            email: props.email,
+            firstName: props.firstName,
+            lastName: props.lastName,
+            currency: props.currency || 'EGP',
+            type: props.type || 'card',
+            country: props.country || 'EG',
+            address: props.address || {},
+        };
     }
 
     // authenticate user & get token using api key to precess other requests
@@ -34,6 +73,7 @@ class AcceptService {
                     api_key: config.apiKey
                 },
             });
+            marchantId = response.data.profile.id;
             token = response.data.token;
             return true;
         } catch (e) {
@@ -55,8 +95,10 @@ class AcceptService {
                 }
             });
             if (orders.data.results.length) {
-                orderId = orders.data.results[0].id;
-                return true;
+                throw {
+                    order: orders.data.results[0],
+                    message: `order already exist for given unique id: ${options.uniqueId}`
+                };
             }
             const response = await axios({
                 method: 'post',
@@ -66,7 +108,7 @@ class AcceptService {
                     token,
                 },
                 data: {
-                    'merchant_id': options.marchantId,
+                    'merchant_id': marchantId,
                     'merchant_order_id': options.uniqueId,
                     'amount_cents': options.price * 100,
                     'currency': options.currency,
@@ -104,7 +146,7 @@ class AcceptService {
                     'billing_data': {
                         'first_name': options.firstName,
                         'last_name': options.lastName,
-                        'phone_number': options.code + options.mobile,
+                        'phone_number': options.phoneNumber,
                         'email': options.email,
                         'country': options.country,
                         'city': options.address.city || 'NA',
@@ -129,78 +171,59 @@ class AcceptService {
             throw e;
         }
     }
+
     // createURL will generate iframe url to open it in webview to make payment.
     async createURL() {
         return `${baseUrl}/acceptance/iframes/${config.iFrameId}?payment_token=${paymentToken}`;
     }
 
     // create reference for cash payment
-    // async createReference(paymentToken) {
-    //     try {
-    //         const response = await axios({
-    //             method: 'post',
-    //             url: `${baseUrl}/acceptance/payments`,
-    //             headers: { 'content-type': 'application/json' },
-    //             params: {
-    //                 payment_token: paymentToken,
-    //             },
-    //             data: {
-    //                 'source': {
-    //                     'identifier': 'AGGREGATOR',
-    //                     'subtype': 'AGGREGATOR'
-    //                 },
-    //                 'payment_token': paymentToken
-    //             }
-    //         });
-    //         return response.data.data ? response.data.data.bill_reference : null;
-    //     } catch (e) {
-    //         console.warn('createReference error', e)
-    // throw e;
-    //     }
-    // }
-
-    // set options for order request
-    setOptions(props) {
-        if (!props || !props.uniqueId || !props.price || !props.firstName
-            || !props.lastName || !props.email || !props.mobile) {
-            throw {
-                status: 400,
-                message: 'bad request'
-            };
+    async createReference() {
+        try {
+            const response = await axios({
+                method: 'post',
+                url: `${baseUrl}/acceptance/payments/pay`,
+                headers: { 'content-type': 'application/json' },
+                params: {
+                    payment_token: paymentToken,
+                },
+                data: {
+                    source: sourceData[options.type],
+                    payment_token: paymentToken
+                }
+            });
+            if (options.type === 'wallet') {
+                return response.data ? response.data.redirect_url : '';
+            } else if (options.type === 'kiosk') {
+                return response.data ? response.data.data.bill_reference : '';
+            }
+            return response.data ? response.data.id : null;
+        } catch (e) {
+            console.warn('createReference error', e)
+            throw e;
         }
-        options = {
-            uniqueId: props.uniqueId,
-            price: Number((props.price).toFixed(0)),
-            mobile: props.mobile,
-            email: props.email,
-            firstName: props.firstName,
-            lastName: props.lastName,
-            code: props.code || '+20',
-            currency: props.currency || 'EGP',
-            type: props.type || 'card',
-            country: props.country || 'EG',
-            address: props.address || {},
-        };
     }
 
-    // generate & return iFrame url
-    async getIframeUrl(props) {
+    // get generated recerence number for cash transaction / redirect url for wallet transection
+    async getReference(props) {
         try {
             this.setOptions(props);
             await this.getToken();
+            console.log('getToken done...')
             await this.getOrder();
+            console.log('getOrder done...')
             await this.generatePaymentToken();
-            return await this.createURL();
-            // if (options.type === 'cash') {
-            //     return await this.createReference(paymentToken);
-            // } else {
-            //     const url = await this.createURL(paymentToken);
-            //     return url;
-            // }
+            console.log('generatePaymentToken done...')
+            if (options.type === 'card') {
+                return await this.createURL();
+            }
+            return await this.createReference();
         } catch (e) {
             throw e;
         }
     };
+
 }
+
 const acceptService = new AcceptService();
 export default acceptService;
